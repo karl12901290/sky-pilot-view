@@ -14,11 +14,13 @@ export function AppLayout({ children }: AppLayoutProps) {
   const isMobile = useIsMobile();
   
   return (
-    <SidebarProvider defaultCollapsed={isMobile} collapsedWidth={72}>
+    // The SidebarProvider does not accept defaultCollapsed or collapsedWidth directly
+    // It only accepts open, onOpenChange, and defaultOpen
+    <SidebarProvider>
       <div className="min-h-screen w-full flex flex-col bg-skylog-dark text-white">
         <AppHeader />
         <div className="flex flex-1 w-full">
-          <AppSidebar />
+          <AppSidebar collapsed={isMobile} />
           <main className="flex-1 p-4 lg:p-6 overflow-hidden">{children}</main>
         </div>
         <Toaster position="bottom-right" closeButton />

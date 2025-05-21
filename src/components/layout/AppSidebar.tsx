@@ -18,8 +18,12 @@ import {
   MapPin
 } from "lucide-react";
 
-export function AppSidebar() {
-  const { collapsed } = useSidebar();
+interface AppSidebarProps {
+  collapsed?: boolean;
+}
+
+export function AppSidebar({ collapsed = false }: AppSidebarProps) {
+  const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -33,7 +37,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       className={`${collapsed ? "w-[72px]" : "w-[240px]"} transition-all duration-300 pb-4 bg-sidebar border-r border-skylog-border`}
-      collapsible
+      collapsible="icon"
     >
       <SidebarContent>
         <div className={`flex justify-center pt-3 pb-6 ${collapsed ? "" : "px-4"}`}>
@@ -50,7 +54,7 @@ export function AppSidebar() {
           )}
         </div>
 
-        <SidebarGroup defaultOpen>
+        <SidebarGroup>
           <SidebarGroupLabel className="text-xs uppercase tracking-wider text-muted-foreground/70">
             {collapsed ? "" : "Main Navigation"}
           </SidebarGroupLabel>
