@@ -1,26 +1,27 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+
+import React from "react";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname
-    );
-  }, [location.pathname]);
-
+  const navigate = useNavigate();
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </a>
+    <AppLayout>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] animate-fade-in">
+        <h1 className="text-7xl font-bold text-skylog-primary mb-4">404</h1>
+        <h2 className="text-2xl font-medium mb-6">Page Not Found</h2>
+        <p className="text-muted-foreground text-center max-w-md mb-8">
+          The page you are looking for doesn't exist or has been moved.
+          Return to dashboard to continue exploring your flight data.
+        </p>
+        <Button onClick={() => navigate("/")} className="gap-2">
+          Return to Dashboard <ArrowRight size={16} />
+        </Button>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 
