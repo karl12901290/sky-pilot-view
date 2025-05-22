@@ -8,6 +8,11 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
 import Landing from "./pages/Landing";
 import FlightLogs from "./pages/FlightLogs";
+import DroneFleet from "./pages/DroneFleet";
+import MapExplorer from "./pages/MapExplorer";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 import AuthLayout from "./pages/auth/AuthLayout";
 import Login from "./pages/auth/Login";
@@ -37,12 +42,12 @@ const App = () => (
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Index />} />
               <Route path="/flights" element={<FlightLogs />} />
+              <Route path="/fleet" element={<DroneFleet />} />
+              <Route path="/map" element={<MapExplorer />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/notifications" element={<Notifications />} />
             </Route>
-
-            {/* Admin Routes (commented for future implementation) */}
-            {/* <Route element={<ProtectedRoute requiredRoles={["admin"]} />}>
-              <Route path="/admin/users" element={<AdminUsers />} />
-            </Route> */}
             
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
