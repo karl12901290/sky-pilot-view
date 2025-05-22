@@ -9,6 +9,86 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      drones: {
+        Row: {
+          created_at: string
+          drone_id: string
+          health_score: number | null
+          model: string | null
+          serial_number: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          drone_id?: string
+          health_score?: number | null
+          model?: string | null
+          serial_number?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          drone_id?: string
+          health_score?: number | null
+          model?: string | null
+          serial_number?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      flights: {
+        Row: {
+          airspace_violations: Json | null
+          created_at: string
+          distance_km: number | null
+          drone_id: string
+          end_time: string | null
+          flight_id: string
+          max_altitude: number | null
+          raw_log_url: string | null
+          start_time: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          airspace_violations?: Json | null
+          created_at?: string
+          distance_km?: number | null
+          drone_id: string
+          end_time?: string | null
+          flight_id?: string
+          max_altitude?: number | null
+          raw_log_url?: string | null
+          start_time?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          airspace_violations?: Json | null
+          created_at?: string
+          distance_km?: number | null
+          drone_id?: string
+          end_time?: string | null
+          flight_id?: string
+          max_altitude?: number | null
+          raw_log_url?: string | null
+          start_time?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flights_drone_id_fkey"
+            columns: ["drone_id"]
+            isOneToOne: false
+            referencedRelation: "drones"
+            referencedColumns: ["drone_id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -39,12 +119,87 @@ export type Database = {
         }
         Relationships: []
       }
+      telemetry: {
+        Row: {
+          altitude: number | null
+          battery_temp: number | null
+          created_at: string
+          flight_id: string
+          latitude: number | null
+          longitude: number | null
+          speed: number | null
+          telemetry_id: string
+          time: string
+        }
+        Insert: {
+          altitude?: number | null
+          battery_temp?: number | null
+          created_at?: string
+          flight_id: string
+          latitude?: number | null
+          longitude?: number | null
+          speed?: number | null
+          telemetry_id?: string
+          time: string
+        }
+        Update: {
+          altitude?: number | null
+          battery_temp?: number | null
+          created_at?: string
+          flight_id?: string
+          latitude?: number | null
+          longitude?: number | null
+          speed?: number | null
+          telemetry_id?: string
+          time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "telemetry_flight_id_fkey"
+            columns: ["flight_id"]
+            isOneToOne: false
+            referencedRelation: "flights"
+            referencedColumns: ["flight_id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      has_role: {
+        Args: { role_name: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

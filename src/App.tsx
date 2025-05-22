@@ -38,6 +38,11 @@ const App = () => (
               <Route path="/dashboard" element={<Index />} />
               <Route path="/flights" element={<FlightLogs />} />
             </Route>
+
+            {/* Admin Routes (commented for future implementation) */}
+            {/* <Route element={<ProtectedRoute requiredRoles={["admin"]} />}>
+              <Route path="/admin/users" element={<AdminUsers />} />
+            </Route> */}
             
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />

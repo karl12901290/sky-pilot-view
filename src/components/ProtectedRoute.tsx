@@ -1,10 +1,14 @@
-
 import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
-const ProtectedRoute: React.FC = () => {
+interface ProtectedRouteProps {
+  requiredRoles?: string[];
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRoles = [] }) => {
   const { user, isLoading } = useAuth();
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -14,9 +18,22 @@ const ProtectedRoute: React.FC = () => {
     );
   }
 
+  // If user is not authenticated, redirect to login
   if (!user) {
-    return <Navigate to="/auth/login" replace />;
+    return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
+
+  // If there are required roles but user doesn't have them, redirect to dashboard
+  // Note: Role checking would be implemented in the AuthContext
+  // We'll keep this commented until we implement role fetching
+  /*
+  if (requiredRoles.length > 0) {
+    const hasRequiredRole = requiredRoles.some(role => userRoles.includes(role));
+    if (!hasRequiredRole) {
+      return <Navigate to="/dashboard" replace />;
+    }
+  }
+  */
 
   return <Outlet />;
 };
