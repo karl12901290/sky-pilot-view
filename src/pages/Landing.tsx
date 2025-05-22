@@ -7,27 +7,29 @@ import { ArrowRight, CheckCircle, Shield, Star } from "lucide-react";
 const Landing = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Hero Section */}
-      <header className="bg-gradient-to-br from-skylog-dark to-[#1a1f2c] border-b border-skylog-border/20">
-        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Star className="text-skylog-primary h-6 w-6" />
-            <h1 className="text-xl font-bold text-white">SkyLog<span className="text-skylog-primary">Pro</span></h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/auth/login">
-              <Button variant="ghost" className="text-white hover:text-skylog-primary">Log in</Button>
-            </Link>
-            <Link to="/auth/signup">
-              <Button className="bg-skylog-primary hover:bg-skylog-primary/90 text-skylog-dark">
-                Get Started
-              </Button>
-            </Link>
+      {/* Updated Header Section with hover effects */}
+      <header className="fixed w-full top-0 z-50">
+        <div className="mx-auto px-4 py-3">
+          <div className="backdrop-blur-md bg-black/60 rounded-full px-4 border border-gray-800/50 flex justify-between items-center">
+            <div className="flex items-center space-x-2 py-2">
+              <Star className="text-skylog-primary h-6 w-6" />
+              <h1 className="text-xl font-bold text-white">SkyLog<span className="text-skylog-primary">Pro</span></h1>
+            </div>
+            <div className="flex items-center gap-1 md:gap-2">
+              <Link to="/auth/login">
+                <Button variant="ghost" className="text-white hover:text-skylog-primary hover:bg-white/5 rounded-full">Log in</Button>
+              </Link>
+              <Link to="/auth/signup">
+                <Button className="bg-skylog-primary hover:bg-skylog-primary/90 text-skylog-dark rounded-full">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
 
-      <main>
+      <main className="mt-16"> {/* Added margin top to account for fixed header */}
         {/* Hero Section */}
         <section className="relative bg-skylog-dark py-20 overflow-hidden">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1586639988441-53518e645852')] opacity-10 bg-cover bg-center"></div>
@@ -42,13 +44,13 @@ const Landing = () => {
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link to="/auth/signup">
-                  <Button size="lg" className="bg-skylog-primary hover:bg-skylog-primary/90 text-skylog-dark w-full sm:w-auto">
+                  <Button size="lg" className="bg-skylog-primary hover:bg-skylog-primary/90 text-skylog-dark w-full sm:w-auto rounded-full">
                     Start for Free
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
                 <Link to="/flights">
-                  <Button size="lg" variant="outline" className="border-skylog-primary text-skylog-primary hover:bg-skylog-primary/10 w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="border-skylog-primary text-skylog-primary hover:bg-skylog-primary/10 w-full sm:w-auto rounded-full">
                     View Demo
                   </Button>
                 </Link>
