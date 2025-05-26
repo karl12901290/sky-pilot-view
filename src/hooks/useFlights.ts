@@ -6,7 +6,7 @@ import { toast } from '@/components/ui/use-toast';
 
 export interface Flight {
   flight_id: string;
-  drone_id: string;
+  drone_id: string; // This should be required, not optional
   user_id: string;
   start_time: string | null;
   end_time: string | null;
@@ -17,6 +17,18 @@ export interface Flight {
   airspace_violations: any | null;
   created_at: string;
   updated_at: string;
+}
+
+// Create a separate interface for flight creation that makes drone_id required
+export interface CreateFlightData {
+  drone_id: string; // Required for creation
+  start_time?: string | null;
+  end_time?: string | null;
+  distance_km?: number | null;
+  max_altitude?: number | null;
+  location?: string | null;
+  raw_log_url?: string | null;
+  airspace_violations?: any | null;
 }
 
 export const useFlights = () => {
@@ -53,7 +65,7 @@ export const useCreateFlight = () => {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async (flightData: Partial<Flight>) => {
+    mutationFn: async (flightData: CreateFlightData) => {
       if (!user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase
