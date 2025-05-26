@@ -15,7 +15,8 @@ import {
 import {
   ArrowUp,
   BatteryMedium,
-  MapPin
+  MapPin,
+  LayoutDashboard
 } from "lucide-react";
 
 interface AppSidebarProps {
@@ -62,13 +63,8 @@ export function AppSidebar({ collapsed = false }: AppSidebarProps) {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <NavLink to="/" className={getNavClass} end>
-                    <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M9 3H4V12H9V3Z" className="fill-current opacity-80" />
-                      <path d="M20 3H15V8H20V3Z" className="fill-current opacity-80" />
-                      <path d="M20 13H15V21H20V13Z" className="fill-current opacity-80" />
-                      <path d="M9 17H4V21H9V17Z" className="fill-current opacity-80" />
-                    </svg>
+                  <NavLink to="/dashboard" className={getNavClass}>
+                    <LayoutDashboard className="h-5 w-5 mr-2" />
                     {!collapsed && <span>Dashboard</span>}
                   </NavLink>
                 </SidebarMenuButton>

@@ -14,8 +14,11 @@ export type Database = {
           created_at: string
           drone_id: string
           health_score: number | null
+          last_synced: string | null
           model: string | null
+          name: string | null
           serial_number: string | null
+          status: string | null
           updated_at: string
           user_id: string
         }
@@ -23,8 +26,11 @@ export type Database = {
           created_at?: string
           drone_id?: string
           health_score?: number | null
+          last_synced?: string | null
           model?: string | null
+          name?: string | null
           serial_number?: string | null
+          status?: string | null
           updated_at?: string
           user_id: string
         }
@@ -32,8 +38,11 @@ export type Database = {
           created_at?: string
           drone_id?: string
           health_score?: number | null
+          last_synced?: string | null
           model?: string | null
+          name?: string | null
           serial_number?: string | null
+          status?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -47,6 +56,7 @@ export type Database = {
           drone_id: string
           end_time: string | null
           flight_id: string
+          location: string | null
           max_altitude: number | null
           raw_log_url: string | null
           start_time: string | null
@@ -60,6 +70,7 @@ export type Database = {
           drone_id: string
           end_time?: string | null
           flight_id?: string
+          location?: string | null
           max_altitude?: number | null
           raw_log_url?: string | null
           start_time?: string | null
@@ -73,6 +84,7 @@ export type Database = {
           drone_id?: string
           end_time?: string | null
           flight_id?: string
+          location?: string | null
           max_altitude?: number | null
           raw_log_url?: string | null
           start_time?: string | null
