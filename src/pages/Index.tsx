@@ -2,12 +2,22 @@
 import { AppLayout } from "@/components/layout/AppLayout";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { NewFlightDialog } from "@/components/flights/NewFlightDialog";
+import { FlightImportDialog } from "@/components/flights/FlightImportDialog";
+import { AddDroneDialog } from "@/components/drones/AddDroneDialog";
+import { useFlights } from "@/hooks/useFlights";
+import { useDrones } from "@/hooks/useDrones";
+import { format } from "date-fns";
+import { ArrowUp, Zap } from "lucide-react";
 
 const Index = () => {
   const { user } = useAuth();
+  const { data: flights = [] } = useFlights();
+  const { data: drones = [] } = useDrones();
+
+  const recentFlights = flights.slice(0, 5);
+  const activeDrones = drones.filter(drone => drone.status === 'ready');
 
   return (
     <AppLayout>
@@ -20,14 +30,8 @@ const Index = () => {
             </p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" size="sm">
-              <Upload className="h-4 w-4 mr-2" />
-              Import Flight Log
-            </Button>
-            <Button size="sm" className="bg-skylog-primary hover:bg-skylog-primary/90">
-              <Plus className="h-4 w-4 mr-2" />
-              New Flight
-            </Button>
+            <FlightImportDialog />
+            <NewFlightDialog />
           </div>
         </div>
 
@@ -40,11 +44,39 @@ const Index = () => {
               <CardDescription>Your latest flight activities</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <Upload className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No recent flights found</p>
-                <p className="text-sm">Start logging flights to see them here</p>
-              </div>
+              {recentFlights.length > 0 ? (
+                <div className="space-y-3">
+                  {recentFlights.map((flight) => {
+                    const drone = drones.find(d => d.drone_id === flight.drone_id);
+                    return (
+                      <div key={flight.flight_id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <div>
+                          <div className="font-medium text-white">
+                            {drone?.name || drone?.model || "Unknown Drone"}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {flight.location || "Unknown location"} • {flight.start_time ? format(new Date(flight.start_time), "MMM dd, HH:mm") : "No date"}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-medium text-white">
+                            {flight.distance_km ? `${flight.distance_km.toFixed(1)} km` : "N/A"}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {flight.max_altitude ? `${flight.max_altitude.toFixed(0)}m max` : "No altitude data"}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <ArrowUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No recent flights found</p>
+                  <p className="text-sm">Start logging flights to see them here</p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -54,13 +86,44 @@ const Index = () => {
               <CardDescription>Current status of your drones</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <Plus className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No drones in your fleet</p>
-                <Button variant="outline" size="sm" className="mt-2">
-                  Add Your First Drone
-                </Button>
-              </div>
+              {drones.length > 0 ? (
+                <div className="space-y-3">
+                  {drones.slice(0, 5).map((drone) => (
+                    <div key={drone.drone_id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      <div>
+                        <div className="font-medium text-white">
+                          {drone.name || drone.model || `Drone ${drone.serial_number}`}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {drone.model} • Health: {drone.health_score || 100}%
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${
+                          drone.status === 'ready' ? 'bg-green-500' : 
+                          drone.status === 'maintenance' ? 'bg-yellow-500' : 'bg-red-500'
+                        }`} />
+                        <span className="text-sm capitalize text-muted-foreground">
+                          {drone.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  {drones.length > 5 && (
+                    <div className="text-center text-sm text-muted-foreground">
+                      +{drones.length - 5} more drones
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Zap className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No drones in your fleet</p>
+                  <div className="mt-4">
+                    <AddDroneDialog />
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
