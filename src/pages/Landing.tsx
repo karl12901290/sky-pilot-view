@@ -42,16 +42,11 @@ const Landing = () => {
               <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
                 Take control of your drone flight data with professional analytics, real-time monitoring, and comprehensive tracking tools.
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <div className="flex justify-center">
                 <Link to="/auth/signup">
                   <Button size="lg" className="bg-skylog-primary hover:bg-skylog-primary/90 text-skylog-dark w-full sm:w-auto rounded-full">
                     Start for Free
                     <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link to="/flights">
-                  <Button size="lg" variant="outline" className="border-skylog-primary text-skylog-primary hover:bg-skylog-primary/10 w-full sm:w-auto rounded-full">
-                    View Demo
                   </Button>
                 </Link>
               </div>

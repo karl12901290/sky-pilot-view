@@ -2,11 +2,13 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Bell, Activity, Clock, Heart, LogOut } from "lucide-react";
+import { Bell, Activity, Clock, Heart, LogOut, User, Settings } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDrones } from "@/hooks/useDrones";
 import { useFlights } from "@/hooks/useFlights";
+import { useProfile } from "@/hooks/useProfile";
+import { Link } from "react-router-dom";
 import {
   Tooltip,
   TooltipContent,
@@ -18,12 +20,22 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function AppHeader() {
   const isMobile = useIsMobile();
   const { user, signOut } = useAuth();
   const { data: drones = [] } = useDrones();
   const { data: flights = [] } = useFlights();
+  const { data: profile } = useProfile();
   
   // Calculate statistics
   const totalFlights = flights.length;
@@ -40,7 +52,8 @@ export function AppHeader() {
     ? Math.round(drones.reduce((acc, drone) => acc + (drone.health_score || 0), 0) / drones.length)
     : 0;
 
-  const userInitials = user?.email?.substring(0, 2).toUpperCase() || "U";
+  const userInitials = profile?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 
+                      user?.email?.substring(0, 2).toUpperCase() || "U";
   
   return (
     <header className="h-16 w-full border-b border-skylog-border bg-skylog-dark/90 backdrop-blur-sm flex items-center justify-between px-4 sticky top-0 z-30">
@@ -157,27 +170,51 @@ export function AppHeader() {
           Last Sync: 2h ago
         </Button>
         
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="text-muted-foreground hover:text-white"
-                onClick={signOut}
-              >
-                <LogOut size={18} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Sign out</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        
-        <div className="h-8 w-8 rounded-full bg-skylog-primary text-primary-foreground flex items-center justify-center font-medium text-sm">
-          {userInitials}
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || "User"} />
+                <AvatarFallback className="bg-skylog-primary text-primary-foreground">
+                  {userInitials}
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 bg-skylog-card border-skylog-border" align="end" forceMount>
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none text-white">
+                  {profile?.full_name || "User"}
+                </p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user?.email}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-skylog-border" />
+            <DropdownMenuItem asChild>
+              <Link to="/profile" className="cursor-pointer">
+                <User className="mr-2 h-4 w-4" />
+                Profile
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/settings" className="cursor-pointer">
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-skylog-border" />
+            <DropdownMenuItem 
+              className="cursor-pointer text-red-400 focus:text-red-400"
+              onClick={signOut}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
