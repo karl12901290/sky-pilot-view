@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,66 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { User, Camera, Shield, Activity } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 
 const Profile = () => {
+  const { user } = useAuth();
+  const { data: profile, isLoading } = useProfile();
+  const updateProfile = useUpdateProfile();
+  
+  const [formData, setFormData] = useState({
+    full_name: "",
+    username: "",
+    job_title: "",
+    company: "",
+    bio: "",
+  });
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        full_name: profile.full_name || "",
+        username: profile.username || "",
+        job_title: profile.job_title || "",
+        company: profile.company || "",
+        bio: profile.bio || "",
+      });
+    }
+  }, [profile]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await updateProfile.mutateAsync(formData);
+  };
+
+  const handleCancel = () => {
+    if (profile) {
+      setFormData({
+        full_name: profile.full_name || "",
+        username: profile.username || "",
+        job_title: profile.job_title || "",
+        company: profile.company || "",
+        bio: profile.bio || "",
+      });
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <div className="animate-fade-in space-y-6">
+          <div className="h-8 bg-muted animate-pulse rounded w-32"></div>
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-32 bg-muted animate-pulse rounded"></div>
+            ))}
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
   return (
     <AppLayout>
       <div className="animate-fade-in space-y-6">
@@ -44,58 +102,96 @@ const Profile = () => {
                 <CardTitle className="text-lg font-medium">Personal Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex flex-col md:flex-row gap-6">
-                  <div className="md:w-1/4 flex flex-col items-center">
-                    <div className="h-32 w-32 rounded-full bg-skylog-primary/20 border-2 border-skylog-primary flex items-center justify-center relative mb-4">
-                      <User className="h-16 w-16 text-skylog-primary" />
-                      <Button variant="ghost" size="icon" className="absolute bottom-0 right-0 bg-skylog-primary text-white rounded-full h-8 w-8">
-                        <Camera className="h-4 w-4" />
+                <form onSubmit={handleSubmit}>
+                  <div className="flex flex-col md:flex-row gap-6">
+                    <div className="md:w-1/4 flex flex-col items-center">
+                      <div className="h-32 w-32 rounded-full bg-skylog-primary/20 border-2 border-skylog-primary flex items-center justify-center relative mb-4">
+                        <User className="h-16 w-16 text-skylog-primary" />
+                        <Button variant="ghost" size="icon" className="absolute bottom-0 right-0 bg-skylog-primary text-white rounded-full h-8 w-8">
+                          <Camera className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <Button variant="outline" className="w-full" type="button">
+                        Upload Image
                       </Button>
                     </div>
-                    <Button variant="outline" className="w-full">
-                      Upload Image
+
+                    <div className="flex-1 space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="fullName">Full Name</Label>
+                          <Input 
+                            id="fullName" 
+                            value={formData.full_name}
+                            onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
+                            className="bg-skylog-dark border-skylog-border" 
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email Address</Label>
+                          <Input 
+                            id="email" 
+                            value={user?.email || ""} 
+                            className="bg-skylog-dark border-skylog-border" 
+                            readOnly 
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="username">Username</Label>
+                          <Input 
+                            id="username" 
+                            value={formData.username}
+                            onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
+                            className="bg-skylog-dark border-skylog-border" 
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="title">Job Title</Label>
+                          <Input 
+                            id="title" 
+                            value={formData.job_title}
+                            onChange={(e) => setFormData(prev => ({ ...prev, job_title: e.target.value }))}
+                            className="bg-skylog-dark border-skylog-border" 
+                          />
+                        </div>
+
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="company">Company</Label>
+                          <Input 
+                            id="company" 
+                            value={formData.company}
+                            onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
+                            className="bg-skylog-dark border-skylog-border" 
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="bio">Bio</Label>
+                        <textarea
+                          id="bio"
+                          rows={4}
+                          className="w-full rounded-md border border-skylog-border bg-skylog-dark px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          value={formData.bio}
+                          onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                          placeholder="Tell us about yourself..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end gap-2 mt-6">
+                    <Button type="button" variant="outline" onClick={handleCancel}>
+                      Cancel
+                    </Button>
+                    <Button type="submit" disabled={updateProfile.isPending}>
+                      {updateProfile.isPending ? "Saving..." : "Save Changes"}
                     </Button>
                   </div>
-
-                  <div className="flex-1 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="fullName">Full Name</Label>
-                        <Input id="fullName" defaultValue="John Pilot" className="bg-skylog-dark border-skylog-border" />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email Address</Label>
-                        <Input id="email" defaultValue="john@skylogpro.com" className="bg-skylog-dark border-skylog-border" readOnly />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="title">Job Title</Label>
-                        <Input id="title" defaultValue="Professional Drone Pilot" className="bg-skylog-dark border-skylog-border" />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="company">Company</Label>
-                        <Input id="company" defaultValue="SkyVision Media" className="bg-skylog-dark border-skylog-border" />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="bio">Bio</Label>
-                      <textarea
-                        id="bio"
-                        rows={4}
-                        className="w-full rounded-md border border-skylog-border bg-skylog-dark px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        defaultValue="Professional drone pilot with 5+ years of experience in aerial photography and cinematography. Certified by FAA with Part 107 license."
-                      />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline">Cancel</Button>
-                  <Button>Save Changes</Button>
-                </div>
+                </form>
               </CardContent>
             </Card>
 
